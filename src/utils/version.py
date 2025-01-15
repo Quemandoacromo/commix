@@ -3,7 +3,7 @@
 
 """
 This file is part of Commix Project (https://commixproject.com).
-Copyright (c) 2014-2024 Anastasios Stasinopoulos (@ancst).
+Copyright (c) 2014-2025 Anastasios Stasinopoulos (@ancst).
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -33,4 +33,5 @@ def python_version():
     warn_msg += PYTHON_VERSION + ". "
     warn_msg += "You are advised to re-run with Python 3."
     settings.print_data_to_stdout(settings.print_bold_warning_msg(warn_msg))
-    #raise SystemExit()
+
+# eof
