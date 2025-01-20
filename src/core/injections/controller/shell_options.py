@@ -3,7 +3,7 @@
 
 """
 This file is part of Commix Project (https://commixproject.com).
-Copyright (c) 2014-2024 Anastasios Stasinopoulos (@ancst).
+Copyright (c) 2014-2025 Anastasios Stasinopoulos (@ancst).
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -27,30 +27,12 @@ from src.thirdparty.six.moves import urllib as _urllib
 from src.thirdparty.colorama import Fore, Back, Style, init
 
 """
-Check for established connection
-"""
-def check_established_connection():
-  while True:
-    time.sleep(1)
-    if settings.VERBOSITY_LEVEL == 1:
-      settings.print_data_to_stdout(settings.SINGLE_WHITESPACE)
-    warn_msg = "Something went wrong with the reverse TCP connection."
-    warn_msg += " Please wait while checking state."
-    settings.print_data_to_stdout(settings.print_warning_msg(warn_msg))
-    lines = os.popen('netstat -anta').read().split("\n")
-    for line in lines:
-      if settings.LHOST + ":" + settings.LPORT in line and "ESTABLISHED" in line:
-        pass
-      else:
-        return
-
-"""
 Execute the bind / reverse TCP shell
 """
 def execute_shell(separator, TAG, cmd, prefix, suffix, whitespace, http_request_method, url, vuln_parameter, alter_shell, filename, os_shell_option, timesec, payload, OUTPUT_TEXTFILE, technique):
 
   if technique == settings.INJECTION_TECHNIQUE.DYNAMIC_CODE:
-    from src.core.injections.results_based.techniques.eval_based import eb_injector as injecto
+    from src.core.injections.results_based.techniques.eval_based import eb_injector as injector
     # Command execution results.
     start = time.time()
     response = injector.injection(separator, TAG, cmd, prefix, suffix, whitespace, http_request_method, url, vuln_parameter, alter_shell, filename, technique)
@@ -61,9 +43,9 @@ def execute_shell(separator, TAG, cmd, prefix, suffix, whitespace, http_request_
   else:
     # Command execution results.
     start = time.time()
-    if technique == settings.INJECTION_TECHNIQUE.FILE_BASED:
+    if technique == settings.INJECTION_TECHNIQUE.FILE_BASED or technique == settings.INJECTION_TECHNIQUE.TEMP_FILE_BASED:
       from src.core.injections.semiblind.techniques.file_based import fb_injector as injector
-      response = injector.injection(separator, payload, TAG, cmd, prefix, suffix, whitespace, http_request_method, url, vuln_parameter, OUTPUT_TEXTFILE, alter_shell, filename, technique)
+      response = injector.injection(separator, TAG, cmd, prefix, suffix, whitespace, http_request_method, url, vuln_parameter, OUTPUT_TEXTFILE, alter_shell, filename, technique)
     else:
       from src.core.injections.results_based.techniques.classic import cb_injector as injector
       whitespace = settings.WHITESPACES[0]
@@ -74,16 +56,6 @@ def execute_shell(separator, TAG, cmd, prefix, suffix, whitespace, http_request_
     diff = end - start
     # Evaluate injection results.
     shell = injector.injection_results(response, TAG, cmd, technique, url, OUTPUT_TEXTFILE, timesec)
-
-  if settings.REVERSE_TCP and (int(diff) > 0 and int(diff) < 6):
-    check_established_connection()
-  else:
-    if settings.VERBOSITY_LEVEL == 1:
-      settings.print_data_to_stdout(settings.SINGLE_WHITESPACE)
-
-  err_msg = "The " + os_shell_option.split("_")[0] + " "
-  err_msg += os_shell_option.split("_")[1].upper() + " connection has failed."
-  settings.print_data_to_stdout(settings.print_critical_msg(err_msg))
 
 """
 Configure the bind TCP shell

