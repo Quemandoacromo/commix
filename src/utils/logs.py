@@ -271,6 +271,8 @@ def write_report():
 Print logs notification.
 """
 def print_logs_notification(filename, url):
+  from src.core.requests import keepalive
+  keepalive.close_all()
   if os.path.exists(settings.CLI_HISTORY):
     checks.save_cmd_history()
   add_footer(filename)

@@ -328,7 +328,7 @@ APPLICATION = "commix"
 DESCRIPTION_FULL = "Automated All-in-One OS Command Injection Exploitation Tool"
 AUTHOR  = "Anastasios Stasinopoulos"
 VERSION_NUM = "4.2"
-REVISION = "108"
+REVISION = "109"
 STABLE_RELEASE = False
 VERSION = "v"
 if STABLE_RELEASE:
@@ -678,6 +678,10 @@ DELAY_RETRY = 1
 # Max number of concurrent HTTP requests during data retrieval.
 THREADS = 1
 MAX_THREADS = 10
+# Thread count '-o' raises to, unless '--threads' was given.
+OPTIMIZE_THREADS = 3
+# Whether persistent (Keep-Alive) connections are in use.
+KEEP_ALIVE = False
 
 # Locks for shared state accessed by concurrent threads.
 PRINT_LOCK = _threading.Lock()
@@ -759,7 +763,7 @@ WIN_RECOGNISE_HP = "echo %PROCESSOR_ARCHITECTURE%"
 # File System access options
 # Read file
 FILE_READ = "cat "
-# Used by the interactive "download", so the file's exact bytes survive the transfer.
+# Used by "download", so the file's exact bytes survive.
 FILE_READ_B64 = "base64 <"
 WIN_FILE_READ_B64 = "powershell.exe -c \"[Convert]::ToBase64String([IO.File]::ReadAllBytes('{}'))\""
 FILE_WRITE_OPERATOR = " >"

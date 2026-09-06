@@ -1,4 +1,6 @@
 ## Version 4.2 (TBA)
+* Added: New `-o` switch to turn on all optimization switches.
+* Added: Persistent (Keep-Alive) connections are now used by default, with a new `--no-keep-alive' switch to opt out.
 * Added: New `download` and `upload` commands in the `os_shell` mode, to transfer files during shell interaction.
 * Added: New `--report-json` switch to store run results to a JSON file.
 * Added: New `--abort-on-empty` switch to abort data retrieval on empty results.

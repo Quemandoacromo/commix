@@ -36,6 +36,7 @@ from src.utils import settings
 from src.core.injections.controller import checks
 from src.core.requests import proxy
 from src.core.requests import redirection
+from src.core.requests import keepalive
 from src.core.requests import stability
 from src.thirdparty.six.moves import urllib as _urllib
 
@@ -182,6 +183,14 @@ def check_http_traffic(request):
         if menu.options.traffic_file:
           req_msg = "HTTP request [#" + str(settings.TOTAL_OF_REQUESTS) + "]:"
           logs.log_traffic(req_msg)
+
+    """
+    Reuse a pooled connection, when enabled.
+    """
+    def do_open(self, http_class, req, **http_conn_args):
+      if settings.KEEP_ALIVE:
+        return keepalive.do_open(self, http_class, req, **http_conn_args)
+      return super(connection_handler, self).do_open(http_class, req, **http_conn_args)
 
     def http_open(self, req):
       try:

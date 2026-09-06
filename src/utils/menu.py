@@ -452,8 +452,20 @@ modules.add_option("--shellshock",
 optimization = OptionGroup(parser, Style.BRIGHT + Style.UNDERLINE + "Optimization" + Style.RESET_ALL,
                         "These options can be used to optimize the performance.")
 
+optimization.add_option("-o",
+                action="store_true",
+                dest="optimize",
+                default=False,
+                help="Turn on all optimization switches.")
+
+optimization.add_option("--no-keep-alive",
+                action="store_true",
+                dest="no_keep_alive",
+                default=False,
+                help="Disable persistent HTTP(s) connections (Keep-Alive).")
+
 optimization.add_option("--threads",
-                default=1,
+                default=None,
                 action="store",
                 type="int",
                 dest="threads",

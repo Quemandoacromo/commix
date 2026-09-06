@@ -3155,6 +3155,39 @@ def define_vulnerable_http_header(http_header_name):
   return http_header_name
 
 """
+Decide whether persistent (Keep-Alive) connections are used.
+"""
+def init_keep_alive():
+  reason = None
+  if menu.options.no_keep_alive:
+    settings.KEEP_ALIVE = False
+    return
+  if menu.options.http10:
+    reason = "the HTTP/1.0 protocol"
+  elif menu.options.proxy or menu.options.tor:
+    reason = "a proxy"
+  elif menu.options.auth_cred and menu.options.auth_type and menu.options.auth_type.lower() == settings.AUTH_TYPE.DIGEST:
+    reason = "digest authentication"
+
+  settings.KEEP_ALIVE = reason is None
+  if reason and settings.VERBOSITY_LEVEL != 0:
+    debug_msg = "Persistent (Keep-Alive) connections were disabled (incompatible with " + reason + ")."
+    settings.print_data_to_stdout(settings.print_debug_msg(debug_msg))
+
+"""
+Apply the optimization switches ('-o').
+"""
+def set_optimize():
+  # Persistent connections are already on by default, so only the thread count is left.
+  if menu.options.optimize and menu.options.threads is None:
+    menu.options.threads = settings.OPTIMIZE_THREADS
+    if settings.VERBOSITY_LEVEL != 0:
+      debug_msg = "Setting '--threads' to " + str(settings.OPTIMIZE_THREADS) + ", used indirectly by switch '-o'."
+      settings.print_data_to_stdout(settings.print_debug_msg(debug_msg))
+  if menu.options.threads is None:
+    menu.options.threads = 1
+
+"""
 Check for wrong flags
 """
 def check_wrong_flags():

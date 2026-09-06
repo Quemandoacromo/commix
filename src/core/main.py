@@ -792,6 +792,9 @@ try:
         settings.print_data_to_stdout(settings.print_critical_msg(err_msg))
       raise SystemExit()
 
+    checks.init_keep_alive()
+    checks.set_optimize()
+
     if menu.options.codec:
       if menu.options.codec.lower() not in settings.ENCODING_LIST:
         err_msg = "The provided charset '"  + menu.options.codec + "' is unknown. "
